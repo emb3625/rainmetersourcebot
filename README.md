@@ -11,6 +11,7 @@ This bot will:
 * Will check for your download link comment after three hours of uptime
 #I have a question or inquiry. Who do I talk to?
 Talk to [/u/emb3625](https://reddit.com/u/emb3625).
+
 #Dependencies
 * Python 2.7.10
 * PRAW
