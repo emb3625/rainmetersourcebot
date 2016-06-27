@@ -58,6 +58,8 @@ while 1:
 				gen_log("OP replied, comment.id = " + comment.id)
 				op_has_replied = True
 		if op_has_replied:
+			#delete dictionary key
+			d.pop(key)
 			continue
 		gen_log("OP hasn't replied, adding comment")
 		praw.objects.Moderatable.distinguish(s.add_comment(COMMENT_TEXT))
