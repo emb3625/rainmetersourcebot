@@ -75,4 +75,4 @@ while 1:
 		#delete dictionary entry
 		d.pop(key)
 
-	time.sleep(60*5) # 5 miutes in seconds
+	time.sleep(60*10) # 10 miutes in seconds
