@@ -36,8 +36,7 @@ while 1:
         if post.approved_by is not None:
             gen_log(post.id + " is approved by %s" % post.approved_by)
             continue
-        if post.link_flair_text is not None:
-    	if search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
+        if search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
             #this searches for Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
             #it does not find the correct strings they have a flair where the rule doesn't apply
             gen_log(post.id + " has the flair %s" % post.link_flair_text)
