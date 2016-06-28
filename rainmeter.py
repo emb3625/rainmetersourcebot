@@ -26,17 +26,25 @@ d = {}
 r.login(USERNAME,PASSWORD,disable_warning=True)
 
 while 1:
-	#search for new submissions
-	posts = sub.get_new(limit=10)
-	for post in posts:
-		if post.is_self:
-			gen_log(post.id + " is a self-post")
-			continue
-		if get_entry_exists(post.id):
-			gen_log(post.id + " has already been added")
-			continue
-		gen_log("Adding " + post.id)
-		d[post.id] = int(post.created_utc) + GRACE_PERIOD
+    #search for new submissions
+    posts = sub.get_new(limit=10)
+    for post in posts:
+        if post.is_self:
+            gen_log(post.id + " is a self-post")
+            continue
+        if post.approved_by is not None:
+            gen_log(post.id + " is approved by %s" % post.approved_by)
+            continue
+        if search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
+            #this searches for Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
+            #it does not find the correct strings they have a flair where the rule doesn't apply
+            gen_log(post.id + " has the flair %s" % post.link_flair_text)
+            continue
+        if get_entry_exists(post.id):
+            gen_log(post.id + " has already been added")
+            continue
+        gen_log("Adding " + post.id)
+        d[post.id] = int(post.created_utc) + GRACE_PERIOD
 
 	#check old submissions
 	t = time.time()
