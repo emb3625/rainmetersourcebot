@@ -19,6 +19,8 @@ Talk to [/u/emb3625](https://reddit.com/u/emb3625).
 * PRAW
 * Time
 * Datetime
+* re
+* search
 
 #_DISCLAIMER_
 This bot is currently in a testing/beta phase. It has been tested in a small testing environment, but not in the "real deal". Please report issues and be patient as this bot is rolled out. Thank you.
