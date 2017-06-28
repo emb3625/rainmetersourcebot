@@ -17,11 +17,11 @@ def gen_log(data):
 
 ### MAIN #############################################
 r = praw.Reddit("/r/rainmeter source enforcer by /u/Pandemic21")
-USERNAME='rainmetersourcebot'
-PASSWORD='<password>'
-GRACE_PERIOD=60*60*3 # 3 hours in seconds 
-COMMENT_TEXT="Thank you for your submission. Your post has been temporarily removed because it looks like your submission does not comply with Rule B1.\n\n>With the exception of OC WIP posts, **provide download links** to skins, wallpapers, and visualizers shown in any content submission **within three hours** of posting.\n\nPlease reply to your submission with the download links and then [click here to send the subreddit a modmail](https://www.reddit.com/message/compose?to=%2Fr%2FRainmeter&subject=Please+approve+my+post&message=I+added+download+links+to+my+post.+Can+you+please+approve+it?+Thank+you!+**DOWNLOAD+LINK+HERE**) so your post can be approved. Thank you. \n\n***\n\n^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by [^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. [^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| [^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)"
-sub = r.get_subreddit("rainmeter")
+USERNAME=USERNAME
+PASSWORD=PASSWORD
+GRACE_PERIOD=60*60 # 1 hour in seconds
+COMMENT_TEXT="Thank you for your submission. Your post has been temporarily removed because it looks like your submission does not comply with rule 1 of the posting rules.\n\n>With the exception of OC WIP posts, **provide download links** to skins, wallpapers, and visualizers shown in any content submission. \n\nPlease reply to your submission with the download links and then [click here to send the subreddit a modmail](https://www.reddit.com/message/compose?to=%2Fr%2FRainmeter&subject=Please+approve+my+post&message=I+added+download+links+to+my+post.+Can+you+please+approve+it?+Thank+you!+**INSERT+LINK+TO+POST+HERE**) so your post can be approved. Thank you. \n\n***\n\n^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by [^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. [^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| [^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)"
+sub = r.get_subreddit("rainmeter") #jbottesting while testing, rainmeter normally
 d = {}
 
 r.login(USERNAME,PASSWORD,disable_warning=True)
@@ -76,4 +76,4 @@ while 1:
 		#delete dictionary entry
 		d.pop(key)
 
-	time.sleep(60*10) # 10 miutes in seconds
+	time.sleep(60*5) # 5 miutes in seconds
