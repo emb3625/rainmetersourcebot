@@ -1,18 +1,19 @@
 #What is this?
-/u/rainmetersourcebot is a bot created by [/u/pandemic21](https://reddit.com/u/pandemic21) that is here to help enforce rule B1. The bot has also been modified and improved upon by [/u/NighthawkSLO](https://reddit.com/u/NighthawkSLO).
-> If you share a completed setup, **provide download links** to skins and wallpapers shown **within three hours** of posting.
+/u/rainmetersourcebot is a bot created by [/u/pandemic21](https://reddit.com/u/pandemic21) that is here to help enforce rule 1 of the posting rules. The bot has also been modified and improved upon by [/u/NighthawkSLO](https://reddit.com/u/NighthawkSLO).
+> **Provide all download links** for any skins, wallpapers, etc. in your post.
 
 This is one of the many changes that are going on to improve your subreddit experience here at /r/rainmeter.
-#Why Rule B1?
+#Why rule 1 of the posting rules?
 Rule B1 is the hardest to enforce, and one of the easiest to abuse as us mods don't have the time of the world to make sure that the rule is enforced. 
 
 #What does this bot do?
 This bot will:
 * Temporarily remove your post if you don't have download links
-* Will check for your download link comment after three hours of uptime
+* Will check for your download link comment after your post has been up for about one hour
+* Will give you a message template once
 
 #I have a question or inquiry. Who do I talk to?
-Talk to [/u/emb3625](https://reddit.com/u/emb3625).
+[Send the subreddit a modmail.](https://www.reddit.com/message/compose?to=%2Fr%2FRainmeter)
 
 #Dependencies
 * Python 2.7.10
