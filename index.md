@@ -10,10 +10,9 @@ Rule B1 is the hardest to enforce, and one of the easiest to abuse as us mods do
 This bot will:
 * Temporarily remove your post if you don't have download links
 * Will check for your download link comment after your post has been up for about one hour
-* Will give you a message template once
 
 # I have a question or inquiry. Who do I talk to?
-[Send the subreddit a modmail.](https://www.reddit.com/message/compose?to=%2Fr%2FRainmeter)
+[Send the subreddit a modmail](https://www.reddit.com/message/compose?to=%2Fr%2FRainmeter).
 
 # Dependencies
 * Python 2.7.10
