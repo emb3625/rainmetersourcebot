@@ -1,0 +1,8 @@
+title: Rainmeter Source Bot
+description: Helping to keep the peace at /r/rainmeter.
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-cayman
+
+gems:
+  - jekyll-mentions
