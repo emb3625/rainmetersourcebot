@@ -1,5 +1,5 @@
 # What is this?
-/u/rainmetersourcebot is a bot created by [/u/pandemic21](https://reddit.com/u/pandemic21) that is here to help enforce rule 1 of the posting rules. The bot has also been modified and improved upon by [/u/NighthawkSLO](https://reddit.com/u/NighthawkSLO).
+[/u/rainmetersourcebot](https://reddit.com/u/rainmetersourcebot) is a bot created by [/u/pandemic21](https://reddit.com/u/pandemic21) that is here to help enforce rule 1 of the posting rules. The bot has also been modified and improved upon by [/u/NighthawkSLO](https://reddit.com/u/NighthawkSLO).
 > **Provide all download links** for any skins, wallpapers, etc. in your post.
 
 This is one of the many changes that are going on to improve your subreddit experience here at /r/rainmeter.
