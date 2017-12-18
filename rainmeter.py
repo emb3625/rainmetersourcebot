@@ -16,19 +16,37 @@ def gen_log(data):
 
 
 ### MAIN #############################################
-r = praw.Reddit("/r/rainmeter source enforcer by /u/Pandemic21")
 USERNAME=USERNAME
 PASSWORD=PASSWORD
-GRACE_PERIOD=60*60 # 1 hour in seconds
-COMMENT_TEXT="Thank you for your submission. Your post has been temporarily removed because it looks like your submission does not comply with rule 1 of the posting rules.\n\n>**Provide all download links** for any skins, wallpapers, etc. in your post. \n\nPlease reply to your submission with the download links and then [click here to send the subreddit a modmail](https://www.reddit.com/message/compose?to=%2Fr%2FRainmeter&subject=Please+approve+my+post&message=I+added+download+links+to+my+post.+Can+you+please+approve+it?+Thank+you!+**INSERT+LINK+TO+POST+HERE**) so your post can be approved. Thank you. \n\n***\n\n^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by [^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. [^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| [^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)"
-sub = r.get_subreddit("rainmeter")
-d = {}
+CLIENT_ID=CLIENT_ID
+CLIENT_SECRET=CLIENT_SECRET
 
-r.login(USERNAME,PASSWORD,disable_warning=True)
+r = praw.Reddit(user_agent="/r/rainmeter source enforcer by /u/Pandemic21",
+                client_id=CLIENT_ID,
+                client_secret=CLIENT_SECRET,
+                username=USERNAME,
+                password=PASSWORD)
+GRACE_PERIOD=60*60 # 1 hour in seconds
+END_CHECKING_PERIOD=60*60*6 # 6 hours in seconds
+COMMENT_TEXT=("Thank you for [your submission]({url}). Your post has been temporarily removed because it looks like your submission does not comply with rule 1 of the posting rules.\n\n"
+              ">**Provide all download links** for any skins, wallpapers, etc. in your post.\n\n"
+              "Please reply to your submission with the download links and then wait ~10 minutes for the automated process to approve the post. "
+              "if by then your post is not approved or you believe it was falsly flagged, reply to this conversation to notify the moderators."
+              "\n\n***\n\n^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
+              "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
+              "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
+              "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
+APPROVED_TEXT=("Found a comment and approved the post\n\n***\n\n"
+	      "^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
+              "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
+              "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
+              "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
+sub = r.subreddit("rainmeter")
+d = {}
 
 while 1:
     #search for new submissions
-    posts = sub.get_new(limit=10)
+    posts = sub.new(limit=10)
     for post in posts:
         if post.is_self:
             gen_log(post.id + " is a self-post")
@@ -36,8 +54,8 @@ while 1:
         if post.approved_by is not None:
             gen_log(post.id + " is approved by %s" % post.approved_by)
             continue
-        if search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
-            #this searches for Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
+        if post.link_flair_text is None or search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
+            #this searches for unflaired posts and Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
             #it does not find the correct strings they have a flair where the rule doesn't apply
             gen_log(post.id + " has the flair %s" % post.link_flair_text)
             continue
@@ -54,11 +72,16 @@ while 1:
 		if float(d[key]) > t:
 			gen_log(str(key) + " has " + str(int((d[key])-t)/60) + " minutes left")
 			continue
+		if float(d[key] + END_CHECKING_PERIOD) < t:
+                        gen_log(str(key) + " has been without links for too long, stopped checking")
+                        #delete dictionary entry
+			d.pop(key)
+			continue
 
 		gen_log("Checking " + str(key) + "...")
 		
 		op_has_replied = False
-		s = r.get_submission(submission_id=key)
+		s = r.submission(id=key)
 		op = str(s.author)
 		comments = s.comments
 
@@ -66,14 +89,16 @@ while 1:
 			if op == str(comment.author):
 				gen_log("OP replied, comment.id = " + comment.id)
 				op_has_replied = True
+				break
 		if op_has_replied:
+			#approve post
+			s.mod.approve()
+			s.author.message("Your submission has been removed", APPROVED_TEXT, from_subreddit="rainmeter")
 			#delete dictionary key
 			d.pop(key)
 			continue
-		gen_log("OP hasn't replied, adding comment")
-		praw.objects.Moderatable.distinguish(s.add_comment(COMMENT_TEXT))
-		s.remove()
-		#delete dictionary entry
-		d.pop(key)
+		gen_log("OP hasn't replied, messaging")
+		s.author.message("Your submission has been removed", COMMENT_TEXT.format(url=s.shortlink), from_subreddit="rainmeter")
+		s.mod.remove()
 
 	time.sleep(60*5) # 5 miutes in seconds
