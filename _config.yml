@@ -4,5 +4,5 @@ google_analytics:
 show_downloads: true
 remote_theme: mmistakes/minimal-mistakes
 
-gems:
-  - jekyll-mentions
+plugins:
+  - jekyll-remote-theme
