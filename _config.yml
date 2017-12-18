@@ -2,7 +2,7 @@ title: Rainmeter Source Bot
 description: Helping to keep the peace at /r/rainmeter.
 google_analytics: 
 show_downloads: true
-remote_theme: mmistakes/minimal-mistakes
+theme: jekyll-theme-cayman
 
-plugins:
-  - jekyll-remote-theme
+gems:
+- jekyll-mentions
