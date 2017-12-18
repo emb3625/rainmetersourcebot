@@ -3,7 +3,7 @@
 > **Provide all download links** for any skins, wallpapers, etc. in your post.
 
 This is one of the many changes that are going on to improve your subreddit experience here at /r/rainmeter.
-#Why rule 1 of the posting rules?
+# Why rule 1 of the posting rules?
 Rule B1 is the hardest to enforce, and one of the easiest to abuse as us mods don't have the time of the world to make sure that the rule is enforced. 
 
 # What does this bot do?
