@@ -37,33 +37,33 @@ COMMENT_TEXT=("Thank you for [your submission]({url}). Your post has been tempor
               "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
               "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
 APPROVED_TEXT=("Found the sources and approved the post.\n\n***\n\n"
-	      "^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
-              "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
-              "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
-              "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
+               "^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
+               "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
+               "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
+               "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
 sub = r.subreddit("rainmeter")
 d = {}
 
 while 1:
-    #search for new submissions
-    posts = sub.new(limit=10)
-    for post in posts:
-        if post.is_self:
-            gen_log(post.id + " is a self-post")
-            continue
-        if post.approved_by is not None:
-            gen_log(post.id + " is approved by %s" % post.approved_by)
-            continue
-        if post.link_flair_text is None or search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
-            #this searches for unflaired posts and Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
-            #it does not find the correct strings they have a flair where the rule doesn't apply
-            gen_log(post.id + " has the flair %s" % post.link_flair_text)
-            continue
-        if get_entry_exists(post.id):
-            gen_log(post.id + " has already been added")
-            continue
-        gen_log("Adding " + post.id)
-        d[post.id] = int(post.created_utc) + GRACE_PERIOD
+	#search for new submissions
+	posts = sub.new(limit=10)
+	for post in posts:
+		if post.is_self:
+			gen_log(post.id + " is a self-post")
+			continue
+		if post.approved_by is not None:
+			gen_log(post.id + " is approved by %s" % post.approved_by)
+			continue
+		if post.link_flair_text is None or search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
+			#this searches for unflaired posts and Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
+			#it does not find the correct strings they have a flair where the rule doesn't apply
+			gen_log(post.id + " has the flair %s" % post.link_flair_text)
+			continue
+		if get_entry_exists(post.id):
+			gen_log(post.id + " has already been added")
+			continue
+		gen_log("Adding " + post.id)
+		d[post.id] = int(post.created_utc) + GRACE_PERIOD
 
 	#check old submissions
 	t = time.time()
@@ -73,13 +73,13 @@ while 1:
 			gen_log(str(key) + " has " + str(int((d[key])-t)/60) + " minutes left")
 			continue
 		if float(d[key] + END_CHECKING_PERIOD) < t:
-                        gen_log(str(key) + " has been without links for too long, stopped checking")
-                        #delete dictionary entry
+			gen_log(str(key) + " has been without links for too long, stopped checking")
+			#delete dictionary entry
 			d.pop(key)
 			continue
 
 		gen_log("Checking " + str(key) + "...")
-		
+
 		op_has_replied = False
 		s = r.submission(id=key)
 		op = str(s.author)
