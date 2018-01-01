@@ -37,49 +37,49 @@ COMMENT_TEXT=("Thank you for [your submission]({url}). Your post has been tempor
               "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
               "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
 APPROVED_TEXT=("Found the sources and approved the post.\n\n***\n\n"
-	      "^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
-              "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
-              "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
-              "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
+               "^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
+               "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
+               "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
+               "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
 sub = r.subreddit("rainmeter")
 d = {}
 
 while 1:
-    #search for new submissions
-    posts = sub.new(limit=10)
-    for post in posts:
-        if post.is_self:
-            gen_log(post.id + " is a self-post")
-            continue
-        if post.approved_by is not None:
-            gen_log(post.id + " is approved by %s" % post.approved_by)
-            continue
-        if post.link_flair_text is None or search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
-            #this searches for unflaired posts and Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
-            #it does not find the correct strings they have a flair where the rule doesn't apply
-            gen_log(post.id + " has the flair %s" % post.link_flair_text)
-            continue
-        if get_entry_exists(post.id):
-            gen_log(post.id + " has already been added")
-            continue
-        gen_log("Adding " + post.id)
-        d[post.id] = int(post.created_utc) + GRACE_PERIOD
+	#search for new submissions
+	posts = sub.new(limit=10)
+	for post in posts:
+		if post.is_self:
+			gen_log(post.id + " is a self-post")
+			continue
+		if post.approved_by is not None:
+			gen_log(post.id + " is approved by %s" % post.approved_by)
+			continue
+		if post.link_flair_text is None or search("(?i)Showcase|First|OC(?! )|SotM|To Be", post.link_flair_text) is None:
+			#this searches for unflaired posts and Showcase, First Attempt, OC, SotM and To Be Tagged... flairs, if
+			#it does not find the correct strings they have a flair where the rule doesn't apply
+			gen_log(post.id + " has the flair %s" % post.link_flair_text)
+			continue
+		if get_entry_exists(post.id):
+			gen_log(post.id + " has already been added")
+			continue
+		gen_log("Adding " + post.id)
+		d[post.id] = {"time": int(post.created_utc) + GRACE_PERIOD, "modmail": None}
 
 	#check old submissions
 	t = time.time()
 
 	for key in d.keys():
-		if float(d[key]) > t:
-			gen_log(str(key) + " has " + str(int((d[key])-t)/60) + " minutes left")
+		if float(d[key]["time"]) > t:
+			gen_log(str(key) + " has " + str(int((d[key]["time"])-t)/60) + " minutes left")
 			continue
-		if float(d[key] + END_CHECKING_PERIOD) < t:
-                        gen_log(str(key) + " has been without links for too long, stopped checking")
-                        #delete dictionary entry
+		if float(d[key]["time"] + END_CHECKING_PERIOD) < t:
+			gen_log(str(key) + " has been without links for too long, stopped checking")
+			#delete dictionary entry
 			d.pop(key)
 			continue
 
 		gen_log("Checking " + str(key) + "...")
-		
+
 		op_has_replied = False
 		s = r.submission(id=key)
 		op = str(s.author)
@@ -91,14 +91,16 @@ while 1:
 				op_has_replied = True
 				break
 		if op_has_replied:
-			#approve post
-			s.mod.approve()
-			s.author.message("Your submission has been removed", APPROVED_TEXT, from_subreddit="rainmeter")
+			if d[key]["modmail"] is not None:
+				#approve post
+				s.mod.approve()
+				d[key]["modmail"].reply(APPROVED_TEXT)
+				d[key]["modmail"].archive()
 			#delete dictionary key
 			d.pop(key)
 			continue
 		gen_log("OP hasn't replied, messaging")
-		s.author.message("Your submission has been removed", COMMENT_TEXT.format(url=s.shortlink), from_subreddit="rainmeter")
+		d[key]["modmail"] = sub.modmail.create("Your submission has been removed", COMMENT_TEXT.format(url=s.shortlink), s.author)
 		s.mod.remove()
 
 	time.sleep(60*5) # 5 miutes in seconds
