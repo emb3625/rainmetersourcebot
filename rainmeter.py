@@ -63,16 +63,16 @@ while 1:
 			gen_log(post.id + " has already been added")
 			continue
 		gen_log("Adding " + post.id)
-		d[post.id] = int(post.created_utc) + GRACE_PERIOD
+		d[post.id] = {"time": int(post.created_utc) + GRACE_PERIOD, "modmail": None}
 
 	#check old submissions
 	t = time.time()
 
 	for key in d.keys():
-		if float(d[key]) > t:
-			gen_log(str(key) + " has " + str(int((d[key])-t)/60) + " minutes left")
+		if float(d[key]["time"]) > t:
+			gen_log(str(key) + " has " + str(int((d[key]["time"])-t)/60) + " minutes left")
 			continue
-		if float(d[key] + END_CHECKING_PERIOD) < t:
+		if float(d[key]["time"] + END_CHECKING_PERIOD) < t:
 			gen_log(str(key) + " has been without links for too long, stopped checking")
 			#delete dictionary entry
 			d.pop(key)
@@ -91,14 +91,16 @@ while 1:
 				op_has_replied = True
 				break
 		if op_has_replied:
-			#approve post
-			s.mod.approve()
-			s.author.message("Your submission has been removed", APPROVED_TEXT, from_subreddit="rainmeter")
+			if d[key]["modmail"] is not None:
+				#approve post
+				s.mod.approve()
+				d[key]["modmail"].reply(APPROVED_TEXT)
+				d[key]["modmail"].archive()
 			#delete dictionary key
 			d.pop(key)
 			continue
 		gen_log("OP hasn't replied, messaging")
-		s.author.message("Your submission has been removed", COMMENT_TEXT.format(url=s.shortlink), from_subreddit="rainmeter")
+		d[key]["modmail"] = sub.modmail.create("Your submission has been removed", COMMENT_TEXT.format(url=s.shortlink), s.author)
 		s.mod.remove()
 
 	time.sleep(60*5) # 5 miutes in seconds
