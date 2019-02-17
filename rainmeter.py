@@ -2,24 +2,21 @@ import praw
 import time
 from re import search
 
-
 def get_entry_exists(submission_id):
 	for key in d.keys():
 		if key == submission_id:
 			return True
 	return False
 
-
 def gen_log(data):
 	datetime =  str(time.strftime("%Y/%m/%d")) + " " + str(time.strftime("%H:%M:%S"))
-	print datetime + ": " + data
-
+	print(datetime + ": " + data)
 
 ### MAIN #############################################
-USERNAME=USERNAME
-PASSWORD=PASSWORD
-CLIENT_ID=CLIENT_ID
-CLIENT_SECRET=CLIENT_SECRET
+USERNAME = ""
+PASSWORD = ""
+CLIENT_ID = ""
+CLIENT_SECRET = ""
 
 r = praw.Reddit(user_agent="/r/rainmeter source enforcer by /u/Pandemic21",
                 client_id=CLIENT_ID,
@@ -33,12 +30,12 @@ COMMENT_TEXT=("Thank you for [your submission]({url}). Your post has been tempor
               "Please reply to your submission with the download links and then wait ~10 minutes for the automated process to approve the post. "
               "If by then your post is not approved, or if you believe it was falsly flagged, reply to this conversation to notify the moderators."
               "\n\n***\n\n^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
-              "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
+              "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO) ^and [^deliteplays](https://reddit.com/u/deliteplays)^. ^I ^help ^keep ^the ^peace ^here. "
               "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
               "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
 APPROVED_TEXT=("Found the sources and approved the post.\n\n***\n\n"
                "^I ^am ^a ^bot, ^created ^by [^Pandemic21](https://reddit.com/u/pandemic21) ^and ^also ^modified ^by "
-               "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO)^. ^I ^help ^keep ^the ^peace ^here. "
+               "[^NighthawkSLO](https://reddit.com/u/NighthawkSLO) ^and [^deliteplays](https://reddit.com/u/deliteplays)^. ^I ^help ^keep ^the ^peace ^here. "
                "[^About](https://emb3625.github.io/rainmetersourcebot) ^| [^Inquiries](https://www.reddit.com/message/compose?to=%2Fr%2Frainmeter&subject=rainmetersourcebot) ^| "
                "[^Changelog](https://github.com/emb3625/rainmetersourcebot/releases/) ^| [^Source ^Code](https://github.com/emb3625/rainmetersourcebot)")
 sub = r.subreddit("rainmeter")
@@ -99,8 +96,12 @@ while 1:
 			#delete dictionary key
 			d.pop(key)
 			continue
-		gen_log("OP hasn't replied, messaging")
-		d[key]["modmail"] = sub.modmail.create("Your submission has been removed", COMMENT_TEXT.format(url=s.shortlink), s.author)
-		s.mod.remove()
 
-	time.sleep(60*5) # 5 miutes in seconds
+		if d[key]["modmail"] is None:
+			gen_log("OP hasn't replied, messaging")
+			d[key]["modmail"] = sub.modmail.create("Your submission has been removed", COMMENT_TEXT.format(url=s.shortlink), s.author)
+			s.mod.remove()
+		else:
+			gen_log("OP hasn't replied, already messaged")
+
+	time.sleep(60*5) # 5 minutes in seconds
